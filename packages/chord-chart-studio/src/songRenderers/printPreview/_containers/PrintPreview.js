@@ -33,6 +33,15 @@ export default connect((state) => ({
 		'expandSectionCopy'
 	),
 
+	// chordDiagrams
+	showChordDiagrams: getOptionValue(
+		state,
+		'songFormatting',
+		'showChordDiagrams'
+	),
+	diagramPosition: getOptionValue(state, 'songFormatting', 'diagramPosition'),
+	diagramSize: getOptionValue(state, 'songFormatting', 'diagramSize'),
+
 	columnsCount: getOptionValue(state, 'songFormatting', 'columnsCount'),
 	columnBreakOnSection: getOptionValue(
 		state,

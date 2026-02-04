@@ -23,6 +23,10 @@ function SongRenderer(props) {
 		'alignBars',
 		'autoRepeatChords',
 		'expandSectionCopy',
+
+		'showChordDiagrams',
+		'diagramPosition',
+		'diagramSize',
 	]);
 
 	const rendered = renderAsHtml(content, renderOptions, useChartFormat);

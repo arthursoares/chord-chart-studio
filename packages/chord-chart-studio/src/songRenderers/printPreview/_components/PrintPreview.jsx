@@ -20,6 +20,10 @@ function PrintPreview(props) {
 		'alignBars',
 		'autoRepeatChords',
 		'expandSectionCopy',
+
+		'showChordDiagrams',
+		'diagramPosition',
+		'diagramSize',
 	]);
 
 	const rendered = renderAsHtml(selectedFile.content || '', {

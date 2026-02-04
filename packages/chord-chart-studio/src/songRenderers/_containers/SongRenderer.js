@@ -33,4 +33,13 @@ export default connect((state) => ({
 		'songFormatting',
 		'expandSectionCopy'
 	),
+
+	// chordDiagrams
+	showChordDiagrams: getOptionValue(
+		state,
+		'songFormatting',
+		'showChordDiagrams'
+	),
+	diagramPosition: getOptionValue(state, 'songFormatting', 'diagramPosition'),
+	diagramSize: getOptionValue(state, 'songFormatting', 'diagramSize'),
 }))(SongRenderer);

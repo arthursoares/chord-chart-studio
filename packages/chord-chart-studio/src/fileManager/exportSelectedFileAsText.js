@@ -46,6 +46,18 @@ export default function exportSelectedFileAsText() {
 			'songFormatting',
 			'expandSectionCopy'
 		),
+
+		showChordDiagrams: getOptionValue(
+			state,
+			'songFormatting',
+			'showChordDiagrams'
+		),
+		diagramPosition: getOptionValue(
+			state,
+			'songFormatting',
+			'diagramPosition'
+		),
+		diagramSize: getOptionValue(state, 'songFormatting', 'diagramSize'),
 	};
 
 	const fileContent = renderAsText(selectedFile.content, renderOptions, true);
