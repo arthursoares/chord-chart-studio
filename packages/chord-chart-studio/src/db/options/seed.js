@@ -40,6 +40,10 @@ export default {
 			columnsCount: 1,
 			columnBreakOnSection: true,
 			documentMargins: 3,
+
+			showChordDiagrams: 'none',
+			diagramPosition: 'top',
+			diagramSize: 'medium',
 		},
 		defaults: {
 			chartType: 'all',
@@ -52,6 +56,10 @@ export default {
 			columnsCount: 1,
 			columnBreakOnSection: true,
 			documentMargins: 3,
+
+			showChordDiagrams: 'none',
+			diagramPosition: 'top',
+			diagramSize: 'medium',
 		},
 		//userDefaults: {},
 	},

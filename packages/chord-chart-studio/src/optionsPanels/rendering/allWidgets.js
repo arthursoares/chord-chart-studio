@@ -161,6 +161,9 @@ export default {
 				'alignBars',
 				'autoRepeatChords',
 				'expandSectionCopy',
+				'showChordDiagrams',
+				'diagramPosition',
+				'diagramSize',
 			],
 			allGroupWidgets: {
 				chartType: {
@@ -225,6 +228,87 @@ export default {
 					option: {
 						context: 'songFormatting',
 						key: 'expandSectionCopy',
+					},
+				},
+				showChordDiagrams: {
+					label: 'Chord diagrams',
+					type: 'select',
+					typeOptions: {
+						allChoices: [
+							{
+								id: 'diagramsNone',
+								label: 'None',
+								value: 'none',
+							},
+							{
+								id: 'diagramsDictionary',
+								label: 'Dictionary',
+								value: 'dictionary',
+							},
+							{
+								id: 'diagramsInline',
+								label: 'Inline',
+								value: 'inline',
+							},
+							{
+								id: 'diagramsBoth',
+								label: 'Both',
+								value: 'both',
+							},
+						],
+					},
+					option: {
+						context: 'songFormatting',
+						key: 'showChordDiagrams',
+					},
+				},
+				diagramPosition: {
+					label: 'Dictionary position',
+					type: 'select',
+					typeOptions: {
+						allChoices: [
+							{
+								id: 'diagramPosTop',
+								label: 'Top',
+								value: 'top',
+							},
+							{
+								id: 'diagramPosBottom',
+								label: 'Bottom',
+								value: 'bottom',
+							},
+						],
+					},
+					option: {
+						context: 'songFormatting',
+						key: 'diagramPosition',
+					},
+				},
+				diagramSize: {
+					label: 'Diagram size',
+					type: 'select',
+					typeOptions: {
+						allChoices: [
+							{
+								id: 'diagramSizeSmall',
+								label: 'Small',
+								value: 'small',
+							},
+							{
+								id: 'diagramSizeMedium',
+								label: 'Medium',
+								value: 'medium',
+							},
+							{
+								id: 'diagramSizeLarge',
+								label: 'Large',
+								value: 'large',
+							},
+						],
+					},
+					option: {
+						context: 'songFormatting',
+						key: 'diagramSize',
 					},
 				},
 			},
