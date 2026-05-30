@@ -54,3 +54,14 @@ $themes: (
 	height: 100%;
 	padding: $spacer-small;
 }
+
+// Distinguish chords from lyrics: bold chords, regular lyrics. The chart is
+// monospace, so bold and regular glyphs share the same width and alignment holds.
+.playRenderer {
+	.cmChordSymbol {
+		font-weight: $weight-bold;
+	}
+	.cmLyricLine {
+		font-weight: normal;
+	}
+}
