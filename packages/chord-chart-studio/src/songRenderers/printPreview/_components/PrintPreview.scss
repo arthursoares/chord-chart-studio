@@ -142,6 +142,18 @@ $themes: (
 	}
 }
 
+// Distinguish chords from lyrics: bold chords, regular lyrics. The chart is
+// monospace, so bold and regular glyphs share the same width and the chord /
+// lyric alignment is preserved.
+.printPreview {
+	.cmChordSymbol {
+		font-weight: $weight-bold;
+	}
+	.cmLyricLine {
+		font-weight: normal;
+	}
+}
+
 /* chord diagram SVGs render via CSS only */
 .printPreview .cmChordDiagram {
 	width: 52px;
