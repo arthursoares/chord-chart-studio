@@ -12,6 +12,9 @@ const editorModeOptions = {
 		'alignBars',
 		'autoRepeatChords',
 		'expandSectionCopy',
+		'showChordDiagrams',
+		'diagramPosition',
+		'diagramSize',
 
 		'columnsCount',
 
@@ -27,6 +30,9 @@ const editorModeOptions = {
 		'alignBars',
 		'autoRepeatChords',
 		'expandSectionCopy',
+		'showChordDiagrams',
+		'diagramPosition',
+		'diagramSize',
 
 		'columnsCount',
 		'columnBreakOnSection',

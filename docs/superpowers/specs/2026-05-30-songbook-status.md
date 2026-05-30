@@ -53,14 +53,16 @@ Studio state (songs + options) lives in one `localStorage` key `state`
   so inline-voiced songs get a populated dictionary in wrapped renders.
 - 1437 tests, 100% coverage gate, eslint/prettier clean.
 
-### chord-chart-studio (commits 1eb377b, e23e576, on master, UNPUSHED)
+### chord-chart-studio (commits 1eb377b, e23e576, d00db69, on master, UNPUSHED)
 - Songbook design spec + this status doc (`docs/superpowers/specs/`).
 - **Print preview songbook**: serif title + composer header (`PageHeader`),
   chord dictionary block on page 1 (the `<p>`-line extraction dropped it before),
   serif/diagram CSS. Built on top of the existing `| C  Am |` chord-line layout.
-- **Uncommitted**: `src/db/options/editorModeOptions.js` (surfaces the
-  `showChordDiagrams`/`diagramPosition`/`diagramSize` options that the WIP defined
-  but never listed for any mode); plus the dev-only `portal:`/`dompurify` resolution.
+- **Surfaced the diagram options** (`editorModeOptions.js`, commit d00db69) —
+  `showChordDiagrams`/`diagramPosition`/`diagramSize` were defined in allWidgets.js
+  but never listed for any mode, so they never appeared in the panel.
+- **Uncommitted (dev-only, do NOT push)**: the `portal:` chord-mark link +
+  `dompurify` resolution in root `package.json`.
 
 ## Verified
 A full inline-voiced samba renders in the studio print view as: dictionary of
