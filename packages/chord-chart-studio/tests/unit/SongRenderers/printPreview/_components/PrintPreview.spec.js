@@ -5,6 +5,9 @@ jest.mock(
 	'../../../../../src/songRenderers/printPreview/helpers/getPagesHeight'
 );
 
+// Mock dompurify so escapeHTML works in jsdom without a real window.DOMParser
+jest.mock('dompurify', () => ({ sanitize: (html) => html }));
+
 import _ from 'lodash';
 import React from 'react';
 
@@ -115,6 +118,125 @@ describe('PrintPreview', () => {
 			).toBeInstanceOf(Element);
 			expect(
 				allPages[1].querySelector('.printPreview-pageHeader')
+			).toBeNull();
+		});
+	});
+
+	describe('Composer header', () => {
+		test('Should render composer subtitle on first page when content has composer directive', async () => {
+			let result = {};
+
+			const fileWithComposer = {
+				content: 'composer John Doe\n_mySong\nA\n',
+				title: 'My Song',
+			};
+
+			await act(async () => {
+				result = render(
+					<PrintPreview {...props} selectedFile={fileWithComposer} />
+				);
+			});
+
+			const { getAllByTestId } = result;
+
+			const allPages = getAllByTestId('printPreview-page');
+
+			const pageComposer = allPages[0].querySelector(
+				'.printPreview-pageComposer'
+			);
+			expect(pageComposer).toBeInstanceOf(Element);
+			expect(pageComposer.textContent).toBe('John Doe');
+		});
+
+		test('Should not render composer subtitle when content has no composer directive', async () => {
+			let result = {};
+
+			const fileWithoutComposer = {
+				content: '_mySong\nA\n',
+				title: 'My Song',
+			};
+
+			await act(async () => {
+				result = render(
+					<PrintPreview
+						{...props}
+						selectedFile={fileWithoutComposer}
+					/>
+				);
+			});
+
+			const { getAllByTestId } = result;
+
+			const allPages = getAllByTestId('printPreview-page');
+
+			expect(
+				allPages[0].querySelector('.printPreview-pageComposer')
+			).toBeNull();
+		});
+	});
+
+	describe('Chord dictionary', () => {
+		test('Should render chord dictionary on first page only when showChordDiagrams is dictionary', async () => {
+			let result = {};
+
+			// Content with a chord definition that will produce a dictionary
+			const fileWithDiagrams = {
+				content: 'chord C x32010\n_Verse\nC\n_hello world\n',
+				title: 'My Song',
+			};
+
+			await act(async () => {
+				result = render(
+					<PrintPreview
+						{...props}
+						selectedFile={fileWithDiagrams}
+						showChordDiagrams={'dictionary'}
+						diagramPosition={'top'}
+						diagramSize={'medium'}
+					/>
+				);
+			});
+
+			const { getAllByTestId } = result;
+
+			const allPages = getAllByTestId('printPreview-page');
+
+			// Dictionary should be on first page
+			const firstPageDict = allPages[0].querySelector(
+				'.printPreview-dictionary'
+			);
+			expect(firstPageDict).toBeInstanceOf(Element);
+
+			// The chord dictionary SVG container should be inside
+			expect(
+				firstPageDict.querySelector('.cmChordDictionary')
+			).toBeInstanceOf(Element);
+		});
+
+		test('Should not render chord dictionary when showChordDiagrams is none', async () => {
+			let result = {};
+
+			const fileWithDiagrams = {
+				content: 'chord C x32010\n_Verse\nC\n_hello world\n',
+				title: 'My Song',
+			};
+
+			await act(async () => {
+				result = render(
+					<PrintPreview
+						{...props}
+						selectedFile={fileWithDiagrams}
+						showChordDiagrams={'none'}
+					/>
+				);
+			});
+
+			const { getAllByTestId } = result;
+
+			const allPages = getAllByTestId('printPreview-page');
+
+			expect(
+				allPages[0].querySelector('.printPreview-dictionary')
 			).toBeNull();
 		});
 	});

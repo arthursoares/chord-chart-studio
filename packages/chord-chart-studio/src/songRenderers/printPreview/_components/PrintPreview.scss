@@ -57,21 +57,33 @@ $themes: (
 }
 
 .printPreview-pageHeader {
-	font-family:
-		system-ui,
-		-apple-system,
-		BlinkMacSystemFont,
-		'Segoe UI',
-		Helvetica,
-		Arial,
-		sans-serif,
-		'Apple Color Emoji',
-		'Segoe UI Emoji',
-		'Segoe UI Symbol';
+	text-align: center;
+	margin-bottom: 1rem;
+	font-family: Georgia, 'Times New Roman', serif;
+}
+
+.printPreview-pageTitle {
 	@include font-size(big);
 	font-weight: $weight-bold;
+	font-family: Georgia, 'Times New Roman', serif;
+}
 
-	margin-bottom: $spacer-small;
+.printPreview-pageComposer {
+	font-variant: small-caps;
+	letter-spacing: 1px;
+	font-size: 0.95rem;
+	margin-top: 0.15rem;
+	font-family: Georgia, 'Times New Roman', serif;
+}
+
+.printPreview-dictionary {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.6rem 0.9rem;
+	justify-content: center;
+	padding-bottom: 0.8rem;
+	margin-bottom: 1rem;
+	border-bottom: 1px solid #ccc;
 }
 
 // flex container for columns
@@ -128,4 +140,36 @@ $themes: (
 	.cmSong {
 		padding: 0 !important;
 	}
+}
+
+/* chord diagram SVGs render via CSS only */
+.printPreview .cmChordDiagram {
+	width: 52px;
+	height: auto;
+}
+.printPreview .cmChordDiagram-label {
+	fill: #111;
+	font-family: Georgia, serif;
+	font-weight: bold;
+}
+.printPreview .cmChordDiagram-string,
+.printPreview .cmChordDiagram-fret {
+	stroke: #333;
+	stroke-width: 1;
+}
+.printPreview .cmChordDiagram-nut {
+	stroke: #222;
+	stroke-width: 3;
+}
+.printPreview .cmChordDiagram-dot {
+	fill: #000;
+}
+.printPreview .cmChordDiagram-openString,
+.printPreview .cmChordDiagram-mutedString {
+	fill: #000;
+	font-family: Georgia, serif;
+}
+.printPreview .cmChordDiagram-fretNumber {
+	fill: #000;
+	font-family: Georgia, serif;
 }

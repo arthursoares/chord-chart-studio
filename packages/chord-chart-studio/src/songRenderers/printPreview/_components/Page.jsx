@@ -6,6 +6,7 @@ import escapeHTML from '../../../core/escapeHTML';
 function Page(props) {
 	const {
 		pageHeader,
+		dictionary,
 		allColumnsLines,
 		documentSize,
 		documentMargins,
@@ -46,6 +47,14 @@ function Page(props) {
 			>
 				<div className={'printPreview-pageContent'}>
 					{pageHeader}
+					{dictionary ? (
+						<div
+							className={'printPreview-dictionary'}
+							dangerouslySetInnerHTML={{
+								__html: escapeHTML(dictionary),
+							}}
+						/>
+					) : null}
 					<div className={'printPreview-pageColumnWrapper'}>
 						{allSectionsRendered}
 					</div>
@@ -56,9 +65,11 @@ function Page(props) {
 }
 Page.defaultProps = {
 	allColumnsLines: [],
+	dictionary: '',
 };
 Page.propTypes = {
 	pageHeader: PropTypes.element,
+	dictionary: PropTypes.string,
 	allColumnsLines: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)),
 	documentSize: PropTypes.string.isRequired,
 	documentMargins: PropTypes.number.isRequired,

@@ -14,6 +14,8 @@ function AllPages(props) {
 
 	const {
 		title,
+		composer,
+		dictionary,
 		allLines,
 		columnsCount,
 		columnBreakOnSection,
@@ -70,7 +72,12 @@ function AllPages(props) {
 		return (
 			<Page
 				key={index}
-				pageHeader={index === 0 ? <PageHeader title={title} /> : null}
+				pageHeader={
+					index === 0 ? (
+						<PageHeader title={title} composer={composer} />
+					) : null
+				}
+				dictionary={index === 0 ? dictionary : ''}
 				allColumnsLines={padColumns(columnsCount, pageColumns)}
 				documentSize={documentSize}
 				documentMargins={documentMargins}
@@ -82,8 +89,14 @@ function AllPages(props) {
 	return <React.Fragment>{allPagesRendered}</React.Fragment>;
 }
 
+AllPages.defaultProps = {
+	composer: '',
+	dictionary: '',
+};
 AllPages.propTypes = {
 	title: PropTypes.string.isRequired,
+	composer: PropTypes.string,
+	dictionary: PropTypes.string,
 	allLines: PropTypes.arrayOf(PropTypes.string).isRequired,
 	columnsCount: PropTypes.number.isRequired,
 	columnBreakOnSection: PropTypes.bool.isRequired,

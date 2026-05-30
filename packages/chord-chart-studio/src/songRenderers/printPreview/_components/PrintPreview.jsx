@@ -3,6 +3,7 @@ import './PrintPreview.scss';
 import _pick from 'lodash/pick';
 import React from 'react';
 import PropTypes from 'prop-types';
+import { parseSong } from 'chord-mark';
 
 import { renderAsHtml } from '../../../core/renderSong';
 import AllPages from './AllPages';
@@ -29,7 +30,17 @@ function PrintPreview(props) {
 	const rendered = renderAsHtml(selectedFile.content || '', {
 		...renderOptions,
 	});
-	const allLines = rendered.match(/(<p.*?>.*?<\/p>)/gm);
+	const allLines = rendered.match(/(<p.*?>.*?<\/p>)/gm) || [];
+
+	const songStart = rendered.indexOf('<div class="cmSong">');
+	const dictionary = songStart > 0 ? rendered.slice(0, songStart) : '';
+
+	let composer = '';
+	try {
+		composer = parseSong(selectedFile.content || '').composer || '';
+	} catch (e) {
+		composer = '';
+	}
 
 	const classNames = ['printPreview', 'cmTheme-print'];
 
@@ -37,6 +48,8 @@ function PrintPreview(props) {
 		<div className={classNames.join(' ')} data-testid={'printPreview'}>
 			<AllPages
 				title={selectedFile.title || ''}
+				composer={composer}
+				dictionary={dictionary}
 				allLines={allLines}
 				columnsCount={props.columnsCount}
 				columnBreakOnSection={props.columnBreakOnSection}
