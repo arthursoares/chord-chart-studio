@@ -1,0 +1,128 @@
+/* eslint-env node */
+'use strict';
+
+/**
+ * Preload script — runs in the renderer's context with Node access, but
+ * exposes ONLY a narrow, validated API surface to the renderer via
+ * contextBridge.  contextIsolation is ON so the renderer cannot reach Node.
+ */
+
+const { contextBridge, ipcRenderer } = require('electron');
+
+// ---------------------------------------------------------------------------
+// Allowed IPC channels (allowlist — never expose a generic "invoke any channel")
+// ---------------------------------------------------------------------------
+
+const INVOKE_CHANNELS = [
+	'dialog:openFile',
+	'dialog:saveFile',
+	'dialog:exportPdf',
+];
+const RECEIVE_CHANNELS = [
+	'menu:openFile',
+	'menu:saveFile',
+	'menu:saveFileAs',
+	'file:opened',
+];
+
+// ---------------------------------------------------------------------------
+// Exposed API  →  window.desktop
+// ---------------------------------------------------------------------------
+
+contextBridge.exposeInMainWorld('desktop', {
+	/**
+	 * Open a .chordmark file via the native dialog.
+	 * @returns {Promise<{filePath: string, content: string} | null>}
+	 */
+	openFile() {
+		return ipcRenderer.invoke('dialog:openFile');
+	},
+
+	/**
+	 * Save content to a .chordmark file via the native dialog.
+	 * @param {object} opts
+	 * @param {string} opts.content       - text content to write
+	 * @param {string} [opts.defaultPath] - suggested file name
+	 * @returns {Promise<{filePath: string} | null>}
+	 */
+	saveFile(opts) {
+		if (!opts || typeof opts.content !== 'string') {
+			return Promise.reject(
+				new Error('saveFile: content must be a string')
+			);
+		}
+		return ipcRenderer.invoke('dialog:saveFile', {
+			content: opts.content,
+			defaultPath:
+				typeof opts.defaultPath === 'string'
+					? opts.defaultPath
+					: undefined,
+		});
+	},
+
+	/**
+	 * Export the current page as a PDF using webContents.printToPDF().
+	 * @returns {Promise<{filePath: string} | null>}
+	 */
+	exportPdf() {
+		return ipcRenderer.invoke('dialog:exportPdf');
+	},
+
+	/**
+	 * Register a callback to be called when the main process (menu) triggers
+	 * a file-open event.
+	 * @param {function} callback
+	 * @returns {function} unsubscribe
+	 */
+	onOpenFile(callback) {
+		const handler = (_event, data) => callback(data);
+		ipcRenderer.on('menu:openFile', handler);
+		return () => ipcRenderer.removeListener('menu:openFile', handler);
+	},
+
+	/**
+	 * Register a callback for menu Save.
+	 * @param {function} callback
+	 * @returns {function} unsubscribe
+	 */
+	onSaveFile(callback) {
+		const handler = (_event, data) => callback(data);
+		ipcRenderer.on('menu:saveFile', handler);
+		return () => ipcRenderer.removeListener('menu:saveFile', handler);
+	},
+
+	/**
+	 * Register a callback for menu Save As.
+	 * @param {function} callback
+	 * @returns {function} unsubscribe
+	 */
+	onSaveFileAs(callback) {
+		const handler = (_event, data) => callback(data);
+		ipcRenderer.on('menu:saveFileAs', handler);
+		return () => ipcRenderer.removeListener('menu:saveFileAs', handler);
+	},
+
+	/**
+	 * Register a callback for when a file has been opened and its content is
+	 * ready (sent back from the main process after dialog:openFile).
+	 * @param {function} callback
+	 * @returns {function} unsubscribe
+	 */
+	onFileOpened(callback) {
+		const handler = (_event, data) => callback(data);
+		ipcRenderer.on('file:opened', handler);
+		return () => ipcRenderer.removeListener('file:opened', handler);
+	},
+
+	/**
+	 * True when running inside Electron.  The renderer can use this to
+	 * conditionally show desktop-only UI (e.g. PDF export button).
+	 */
+	isDesktop: true,
+});
+
+// The allowlist constants below document the intended IPC surface.
+// Direct ipcRenderer access is never given to the renderer — the only
+// communication paths are the four typed methods exposed above.
+void INVOKE_CHANNELS;
+void RECEIVE_CHANNELS;

@@ -6,26 +6,19 @@ import { VitePWA } from 'vite-plugin-pwa';
 export default defineConfig(({ mode }) => {
 	const env = loadEnv(mode, process.cwd(), '');
 
-	return {
-		root: 'src',
-		publicDir: '../public',
-		envDir: '../',
-		base: env.VITE_BASE,
-		build: {
-			outDir: '../build',
-			emptyOutDir: true,
-			rollupOptions: {
-				output: {
-					manualChunks: (id) => {
-						if (id.includes('node_modules')) {
-							return 'vendor';
-						}
-					},
-				},
-			},
-		},
-		plugins: [
-			react(),
+	// When VITE_TARGET=electron the build is consumed by the Electron wrapper:
+	//   • assets use the root base '/' — served via a custom app:// protocol
+	//     so absolute paths resolve correctly without file:// quirks
+	//   • skip the PWA / service-worker (service workers don't run on app://)
+	const isElectron = env.VITE_TARGET === 'electron';
+
+	// VITE_BASE wins if explicitly set; fall back to '/' for both targets.
+	const base = env.VITE_BASE || '/';
+
+	const plugins = [react()];
+
+	if (!isElectron) {
+		plugins.push(
 			VitePWA({
 				registerType: 'autoUpdate',
 				injectRegister: 'script',
@@ -60,7 +53,28 @@ export default defineConfig(({ mode }) => {
 						},
 					],
 				},
-			}),
-		],
+			})
+		);
+	}
+
+	return {
+		root: 'src',
+		publicDir: '../public',
+		envDir: '../',
+		base,
+		build: {
+			outDir: '../build',
+			emptyOutDir: true,
+			rollupOptions: {
+				output: {
+					manualChunks: (id) => {
+						if (id.includes('node_modules')) {
+							return 'vendor';
+						}
+					},
+				},
+			},
+		},
+		plugins,
 	};
 });
