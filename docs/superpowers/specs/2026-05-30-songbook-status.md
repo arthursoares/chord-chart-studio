@@ -68,12 +68,23 @@ Studio state (songs + options) lives in one `localStorage` key `state`
 A full inline-voiced samba renders in the studio print view as: dictionary of
 ~50 diagrams on top + clean chord-over-lyric body + title/composer header.
 
-## Remaining
+## Done — Phase 2 + print polish (2026-06-01)
 
-- **Phase 2 — diagram fidelity**: Roman-numeral fret positions + barre lines in
-  chord-mark `renderChordDiagram` (currently Arabic positions, dot-based) to match
-  the reference lead sheet. A proof renderer with Roman/barres exists in the
-  throwaway generator and in `songsheet-parser` render output.
+- **Phase 2 diagrams** (chord-mark `ae0fe99`): Roman-numeral fret positions
+  (`toRoman`) and **barre lines** (`cmChordDiagram-barre`, drawn when ≥2 strings
+  share the position fret) in `renderChordDiagram`; left margin sized to the Roman
+  label so it isn't clipped; themes scss got a `.cmChordDiagram-barre` rule. 1450
+  tests / 100%.
+- **Print style polish** (chord-chart-studio `6abe159`, `38ec82a`): bold chords /
+  regular lyrics; small-caps section labels; column divider; quiet bar separators;
+  title letter-spacing; phrase spacing on empty lines; a **"Key: …"** header line
+  (from `allKeys`); a per-page **footer** ("title — Page N of M"); and
+  **section-label orphan control** in `mapLinesToColumns`. The footer + key line
+  are included in the `getPagesHeight` measurement so pagination stays correct.
+  Verified live: Roman/barre dictionary + key + footer + 2-page pagination all
+  render together with nothing clipped.
+
+## Remaining
 - **Phase 3 — alignment for unmarked sources**: the `joao-gilberto` `.chordmark`
   files have no `_` markers, so chords don't sit over the right syllables in the
   studio. Fix upstream in songsheet-parser (emit `_`).
