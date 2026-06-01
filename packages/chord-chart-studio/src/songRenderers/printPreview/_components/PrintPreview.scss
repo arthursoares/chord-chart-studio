@@ -152,6 +152,36 @@ $themes: (
 	.cmLyricLine {
 		font-weight: normal;
 	}
+
+	// --- Songbook print polish ---
+
+	// Section labels read as calm separators between sections.
+	.cmSectionLabel {
+		display: inline-block;
+		font-weight: $weight-bold;
+		font-variant: small-caps;
+		letter-spacing: 0.04em;
+		text-decoration: none;
+		border-bottom: 1px solid #b9b9b9;
+		padding-bottom: 1px;
+		margin-top: 0.7em;
+	}
+
+	// Keep the rhythm punctuation quiet so the bold chords lead the eye.
+	.cmBarSeparator {
+		color: #b3b3b3;
+		opacity: 1;
+	}
+	.cmChordDuration {
+		color: #9a9a9a;
+		opacity: 1;
+	}
+
+	// A light vertical rule between columns (classic lead-sheet look).
+	.printPreview-pageColumn:not(:last-of-type) {
+		border-right: 1px solid #e2e2e2;
+		padding-right: 0.7rem;
+	}
 }
 
 /* chord diagram SVGs render via CSS only */
