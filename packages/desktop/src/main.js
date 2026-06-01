@@ -408,9 +408,35 @@ function buildMenu() {
 		],
 	};
 
+	// Standard Edit menu — without it, the clipboard accelerators
+	// (Cmd/Ctrl+C/V/X/A, undo/redo) don't work in the renderer.
+	const editMenu = {
+		label: 'Edit',
+		submenu: [
+			{ role: 'undo' },
+			{ role: 'redo' },
+			{ type: 'separator' },
+			{ role: 'cut' },
+			{ role: 'copy' },
+			{ role: 'paste' },
+			...(isMac
+				? [
+						{ role: 'pasteAndMatchStyle' },
+						{ role: 'delete' },
+						{ role: 'selectAll' },
+					]
+				: [
+						{ role: 'delete' },
+						{ type: 'separator' },
+						{ role: 'selectAll' },
+					]),
+		],
+	};
+
 	const template = [
 		...(isMac ? [macAppMenu] : []),
 		fileMenu,
+		editMenu,
 		viewMenu,
 		windowMenu,
 	];
