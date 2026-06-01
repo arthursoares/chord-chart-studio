@@ -16,6 +16,9 @@ const editorModeOptions = {
 		'diagramPosition',
 		'diagramSize',
 
+		'layoutMode',
+		'barsPerLine',
+
 		'columnsCount',
 
 		'fontSize',
@@ -33,6 +36,9 @@ const editorModeOptions = {
 		'showChordDiagrams',
 		'diagramPosition',
 		'diagramSize',
+
+		'layoutMode',
+		'barsPerLine',
 
 		'columnsCount',
 		'columnBreakOnSection',

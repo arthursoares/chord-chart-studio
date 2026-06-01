@@ -44,6 +44,9 @@ export default {
 			showChordDiagrams: 'none',
 			diagramPosition: 'top',
 			diagramSize: 'medium',
+
+			layoutMode: 'lyric',
+			barsPerLine: 4,
 		},
 		defaults: {
 			chartType: 'all',
@@ -60,6 +63,9 @@ export default {
 			showChordDiagrams: 'none',
 			diagramPosition: 'top',
 			diagramSize: 'medium',
+
+			layoutMode: 'lyric',
+			barsPerLine: 4,
 		},
 		//userDefaults: {},
 	},

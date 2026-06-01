@@ -320,6 +320,8 @@ export default {
 			icon: 'view_compact',
 
 			groupWidgetsOrder: [
+				'layoutMode',
+				'barsPerLine',
 				'fontSize',
 				'columnsCount',
 				'columnBreakOnSection',
@@ -327,6 +329,42 @@ export default {
 			],
 
 			allGroupWidgets: {
+				layoutMode: {
+					label: 'Layout mode',
+					type: 'select',
+					typeOptions: {
+						allChoices: [
+							{
+								id: 'layoutModeLyric',
+								label: 'Lyric',
+								value: 'lyric',
+							},
+							{
+								id: 'layoutModeBar',
+								label: 'Bar',
+								value: 'bar',
+							},
+						],
+					},
+					option: {
+						context: 'songFormatting',
+						key: 'layoutMode',
+					},
+				},
+
+				barsPerLine: {
+					label: 'Bars per line',
+					type: 'slider',
+					typeOptions: {
+						min: 2,
+						max: 8,
+					},
+					option: {
+						context: 'songFormatting',
+						key: 'barsPerLine',
+					},
+				},
+
 				fontSize: {
 					label: 'Font size',
 					type: 'slider',

@@ -42,4 +42,8 @@ export default connect((state) => ({
 	),
 	diagramPosition: getOptionValue(state, 'songFormatting', 'diagramPosition'),
 	diagramSize: getOptionValue(state, 'songFormatting', 'diagramSize'),
+
+	// layout mode
+	layoutMode: getOptionValue(state, 'songFormatting', 'layoutMode'),
+	barsPerLine: getOptionValue(state, 'songFormatting', 'barsPerLine'),
 }))(SongRenderer);

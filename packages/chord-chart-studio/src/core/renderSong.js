@@ -24,12 +24,25 @@ export function renderAsHtml(
 	return render(songTxt, renderOptions, useChartFormat, 'html');
 }
 
+function resolveBarOptions(renderOptions) {
+	// Remove studio-only keys; keep barsPerLine only in Bar mode
+	// eslint-disable-next-line no-unused-vars
+	const { layoutMode, barsPerLine, ...rest } = renderOptions;
+	if (layoutMode === 'bar' && barsPerLine > 0) {
+		return { ...rest, barsPerLine };
+	}
+	return rest;
+}
+
 // eslint-disable-next-line complexity
 function render(songTxt, renderOptions, useChartFormat, outputFormat) {
 	if (useChartFormat) {
 		switch (renderOptions.chartFormat) {
 			case 'chordmark': {
-				const cmHtml = renderSong(songTxt, renderOptions);
+				const cmHtml = renderSong(
+					songTxt,
+					resolveBarOptions(renderOptions)
+				);
 				return outputFormat === 'html' ? cmHtml : toText(cmHtml);
 			}
 			case 'chordmarkSrc':
@@ -66,7 +79,7 @@ function render(songTxt, renderOptions, useChartFormat, outputFormat) {
 	}
 
 	const chordMarkHtml = renderSong(songTxt, {
-		...renderOptions,
+		...resolveBarOptions(renderOptions),
 		wrapChordLyricLines: true,
 	});
 	return outputFormat === 'html' ? chordMarkHtml : toText(chordMarkHtml);

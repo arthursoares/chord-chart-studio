@@ -8,6 +8,7 @@ import { parseSong } from 'chord-mark';
 import { renderAsHtml } from '../../../core/renderSong';
 import AllPages from './AllPages';
 
+// eslint-disable-next-line complexity
 function PrintPreview(props) {
 	const { selectedFile } = props;
 
@@ -25,6 +26,9 @@ function PrintPreview(props) {
 		'showChordDiagrams',
 		'diagramPosition',
 		'diagramSize',
+
+		'layoutMode',
+		'barsPerLine',
 	]);
 
 	const rendered = renderAsHtml(selectedFile.content || '', {

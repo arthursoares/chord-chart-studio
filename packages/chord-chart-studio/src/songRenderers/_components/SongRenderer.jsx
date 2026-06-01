@@ -27,6 +27,9 @@ function SongRenderer(props) {
 		'showChordDiagrams',
 		'diagramPosition',
 		'diagramSize',
+
+		'layoutMode',
+		'barsPerLine',
 	]);
 
 	const rendered = renderAsHtml(content, renderOptions, useChartFormat);
