@@ -84,6 +84,30 @@ A full inline-voiced samba renders in the studio print view as: dictionary of
 - **Commit hygiene**: studio `editorModeOptions` change to commit; nothing pushed
   in any repo (per the user's workflow — they decide pushing).
 
+## Desktop app (Electron)
+
+`packages/desktop` — an **electron-forge** wrapper (commit 1b52d81). electron-forge's
+Vite plugin builds only the **main** + **preload**; the studio renderer is loaded
+separately:
+- **dev**: `BrowserWindow` loads `http://localhost:5173` (start the studio dev
+  server separately: `yarn workspace chord-chart-studio dev`, then
+  `yarn workspace chord-chart-studio-desktop dev`).
+- **prod**: a custom `app://ccs` protocol serves the studio build
+  (`packages/chord-chart-studio/build/`, copied via forge `extraResource`).
+
+The studio's `vite.config.js` gates `VitePWA` off and uses a relative base when
+`VITE_TARGET=electron` (no service worker on `file://`); the web build is
+unchanged otherwise. Build the renderer for Electron with `bundle:electron`.
+Security: contextIsolation, sandbox, no nodeIntegration, CSP, Fuses, ASAR. The
+app menu wires File → Open/Save `.chordmark` (dialog + fs via preload IPC) and
+**Export PDF** (`webContents.printToPDF`).
+
+Verified headlessly: Electron loads the prod build and `printToPDF` yields a
+valid ~49KB PDF. **Follow-ups**: hook the Open/Save IPC into the studio's Redux
+store (the renderer side is stubbed); code signing / notarization; auto-update.
+**Dev-only, uncommitted**: root `package.json` resolutions + `yarn.lock`
+(contaminated by the local `portal:` fork link).
+
 ## Notes / domain facts
 - In this (Brazilian/bossa) repertoire, `+` in a chord name means **major 7**
   (e.g. `A7+` = `AM7` = Amaj7), NOT augmented. chord-symbol normalizes `+` to ♯5,
