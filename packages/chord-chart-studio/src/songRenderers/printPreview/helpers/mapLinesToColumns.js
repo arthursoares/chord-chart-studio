@@ -2,6 +2,7 @@ const cssClasses = {
 	emptyLine: 'cmEmptyLine',
 	chordLine: 'cmChordLine',
 	textLine: 'cmLyricLine',
+	sectionLabel: 'cmSectionLabel',
 };
 
 /**
@@ -97,6 +98,12 @@ function isBreakable(
 		return true;
 	}
 
+	// Never orphan a section label at the end of a column: keep it with
+	// the content that follows it.
+	if (isSectionLabel(currentLine)) {
+		return false;
+	}
+
 	const wouldProduceOrphanTextLine =
 		isChordLine(currentLine) && isTextLine(nextLine);
 	if (noOrphanTextLine === true && wouldProduceOrphanTextLine) {
@@ -120,6 +127,10 @@ function isChordLine(line) {
 
 function isTextLine(line) {
 	return hasClass(line.content, cssClasses.textLine);
+}
+
+function isSectionLabel(line) {
+	return hasClass(line.content, cssClasses.sectionLabel);
 }
 
 function hasClass(line, className) {

@@ -15,6 +15,7 @@ function AllPages(props) {
 	const {
 		title,
 		composer,
+		songKey,
 		dictionary,
 		allLines,
 		columnsCount,
@@ -41,7 +42,7 @@ function AllPages(props) {
 			const { normalPageHeight, firstPageHeight } = await getPagesHeight(
 				title,
 				pageOptions,
-				{ composer, dictionary }
+				{ composer, songKey, dictionary }
 			);
 
 			const allLinesWithHeight = allLines.map((line, index) => ({
@@ -63,6 +64,7 @@ function AllPages(props) {
 		allLines,
 		title,
 		composer,
+		songKey,
 		dictionary,
 		columnsCount,
 		columnBreakOnSection,
@@ -77,7 +79,11 @@ function AllPages(props) {
 				key={index}
 				pageHeader={
 					index === 0 ? (
-						<PageHeader title={title} composer={composer} />
+						<PageHeader
+							title={title}
+							composer={composer}
+							songKey={songKey}
+						/>
 					) : null
 				}
 				dictionary={index === 0 ? dictionary : ''}
@@ -85,6 +91,9 @@ function AllPages(props) {
 				documentSize={documentSize}
 				documentMargins={documentMargins}
 				fontSize={fontSize}
+				title={title}
+				pageNumber={index + 1}
+				pageCount={allPagesColumns.length}
 			/>
 		);
 	});
@@ -94,11 +103,13 @@ function AllPages(props) {
 
 AllPages.defaultProps = {
 	composer: '',
+	songKey: '',
 	dictionary: '',
 };
 AllPages.propTypes = {
 	title: PropTypes.string.isRequired,
 	composer: PropTypes.string,
+	songKey: PropTypes.string,
 	dictionary: PropTypes.string,
 	allLines: PropTypes.arrayOf(PropTypes.string).isRequired,
 	columnsCount: PropTypes.number.isRequired,

@@ -36,10 +36,17 @@ function PrintPreview(props) {
 	const dictionary = songStart > 0 ? rendered.slice(0, songStart) : '';
 
 	let composer = '';
+	let songKey = '';
 	try {
-		composer = parseSong(selectedFile.content || '').composer || '';
+		const parsed = parseSong(selectedFile.content || '');
+		composer = parsed.composer || '';
+		songKey =
+			parsed.allKeys?.explicit?.[0]?.string ||
+			parsed.allKeys?.auto?.string ||
+			'';
 	} catch (e) {
 		composer = '';
+		songKey = '';
 	}
 
 	const classNames = ['printPreview', 'cmTheme-print'];
@@ -49,6 +56,7 @@ function PrintPreview(props) {
 			<AllPages
 				title={selectedFile.title || ''}
 				composer={composer}
+				songKey={songKey}
 				dictionary={dictionary}
 				allLines={allLines}
 				columnsCount={props.columnsCount}

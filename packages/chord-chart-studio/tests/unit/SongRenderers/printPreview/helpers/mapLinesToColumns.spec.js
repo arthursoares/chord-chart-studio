@@ -385,6 +385,57 @@ describe('columnBreakOnSection', () => {
 	});
 });
 
+describe('sectionLabel orphan control', () => {
+	const sectionLabel =
+		'<p class="cmLine"><span class="cmSectionLabel">Verse</span></p>';
+
+	test('should not allow a section label to be the last line of a column', () => {
+		// 5 lines per column at height 20 each in a 100px column.
+		// Line 5 is a section label, so a break is NOT allowed after it.
+		// The break happens after line 6 (the next content line) instead.
+		const allLinesWithHeight = [
+			...getLinesWithHeight({ from: 1, to: 4, height: 20 }),
+			{ content: sectionLabel, height: 20 },
+			{ content: getTextLine(6), height: 20 },
+			{ content: getTextLine(7), height: 20 },
+		];
+
+		const allPagesColumns = mapLinesToColumns(allLinesWithHeight, {
+			columnsCount: 2,
+			noOrphanTextLine: false,
+			columnBreakOnSection: false,
+			normalPageHeight: 100,
+		});
+
+		// The section label must appear together with the text line that follows it.
+		// Column 1 should contain lines 1-4 (80px), not end with the label.
+		// Column 2 should start with the section label + its content.
+		const col1 = allPagesColumns[0][0];
+		const col2 = allPagesColumns[0][1];
+
+		expect(col1[col1.length - 1]).not.toBe(sectionLabel);
+		expect(col2[0]).toBe(sectionLabel);
+	});
+
+	test('section label at the very end of content is still rendered (no nextLine)', () => {
+		const allLinesWithHeight = [
+			...getLinesWithHeight({ from: 1, to: 3, height: 20 }),
+			{ content: sectionLabel, height: 20 },
+		];
+
+		const allPagesColumns = mapLinesToColumns(allLinesWithHeight, {
+			columnsCount: 1,
+			noOrphanTextLine: false,
+			columnBreakOnSection: false,
+			normalPageHeight: 100,
+		});
+
+		// All 4 lines should appear on the single column/page
+		expect(allPagesColumns[0][0].length).toBe(4);
+		expect(allPagesColumns[0][0][3]).toBe(sectionLabel);
+	});
+});
+
 describe('firstPageHeight', () => {
 	test('allows a different column height for the first page', () => {
 		const allLinesWithHeight = getLinesWithHeight({

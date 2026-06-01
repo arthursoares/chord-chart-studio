@@ -49,4 +49,30 @@ describe('PageHeader', () => {
 			).toBeNull();
 		});
 	});
+
+	describe('songKey', () => {
+		test('Should render the key element when songKey prop is provided', () => {
+			const { container } = render(
+				<PageHeader title={'My Song'} songKey={'G'} />
+			);
+
+			const keyEl = container.querySelector('.printPreview-pageKey');
+			expect(keyEl).toBeInstanceOf(Element);
+			expect(keyEl.textContent).toBe('Key: G');
+		});
+
+		test('Should not render key element when songKey prop is empty string', () => {
+			const { container } = render(
+				<PageHeader title={'My Song'} songKey={''} />
+			);
+
+			expect(container.querySelector('.printPreview-pageKey')).toBeNull();
+		});
+
+		test('Should not render key element when songKey prop is omitted', () => {
+			const { container } = render(<PageHeader title={'My Song'} />);
+
+			expect(container.querySelector('.printPreview-pageKey')).toBeNull();
+		});
+	});
 });

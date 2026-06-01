@@ -10,16 +10,25 @@ import PageHeader from '../_components/PageHeader';
 export default async function getAllLinesHeight(
 	title,
 	{ columnsCount, documentSize, documentMargins, fontSize },
-	{ composer = '', dictionary = '' } = {}
+	{ composer = '', songKey = '', dictionary = '' } = {}
 ) {
 	const component = (
 		<Page
-			pageHeader={<PageHeader title={title} composer={composer} />}
+			pageHeader={
+				<PageHeader
+					title={title}
+					composer={composer}
+					songKey={songKey}
+				/>
+			}
 			dictionary={dictionary}
 			allColumnsLines={padColumns(columnsCount)}
 			documentSize={documentSize}
 			documentMargins={documentMargins}
 			fontSize={fontSize}
+			title={title}
+			pageNumber={1}
+			pageCount={1}
 		/>
 	);
 

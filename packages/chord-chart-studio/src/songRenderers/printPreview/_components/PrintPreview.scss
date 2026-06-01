@@ -66,6 +66,7 @@ $themes: (
 	@include font-size(big);
 	font-weight: $weight-bold;
 	font-family: Georgia, 'Times New Roman', serif;
+	letter-spacing: 0.5px;
 }
 
 .printPreview-pageComposer {
@@ -74,6 +75,14 @@ $themes: (
 	font-size: 0.95rem;
 	margin-top: 0.15rem;
 	font-family: Georgia, 'Times New Roman', serif;
+}
+
+.printPreview-pageKey {
+	font-size: 0.8rem;
+	color: #666;
+	margin-top: 0.1rem;
+	font-family: Georgia, 'Times New Roman', serif;
+	font-style: italic;
 }
 
 .printPreview-dictionary {
@@ -93,6 +102,20 @@ $themes: (
 	display: flex;
 	flex-direction: row;
 	flex-wrap: nowrap;
+}
+
+// Footer: sits below the column wrapper, pushed to the bottom because
+// the column wrapper is flex:1
+.printPreview-pageFooter {
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
+	border-top: 1px solid #ddd;
+	padding-top: 0.25rem;
+	margin-top: 0.25rem;
+	font-size: 0.75rem;
+	color: #888;
+	font-family: Georgia, 'Times New Roman', serif;
 }
 
 .printPreview-pageColumn {
@@ -165,6 +188,13 @@ $themes: (
 		border-bottom: 1px solid #b9b9b9;
 		padding-bottom: 1px;
 		margin-top: 0.7em;
+	}
+
+	// Give empty lines a bit more breathing room between phrases without
+	// touching the global line-height (which would push chord↑lyric coupling).
+	.cmEmptyLine {
+		height: 0.6em;
+		line-height: 0.6em;
 	}
 
 	// Keep the rhythm punctuation quiet so the bold chords lead the eye.

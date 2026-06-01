@@ -175,6 +175,54 @@ describe('PrintPreview', () => {
 		});
 	});
 
+	describe('Key header', () => {
+		test('Should render key line on first page when content has explicit key directive', async () => {
+			let result = {};
+
+			const fileWithKey = {
+				content: 'key G\n_mySong\nG C D\n',
+				title: 'My Song',
+			};
+
+			await act(async () => {
+				result = render(
+					<PrintPreview {...props} selectedFile={fileWithKey} />
+				);
+			});
+
+			const { getAllByTestId } = result;
+
+			const allPages = getAllByTestId('printPreview-page');
+
+			const keyEl = allPages[0].querySelector('.printPreview-pageKey');
+			expect(keyEl).toBeInstanceOf(Element);
+			expect(keyEl.textContent).toBe('Key: G');
+		});
+
+		test('Should not render key line when content has no key directive and key cannot be auto-detected', async () => {
+			let result = {};
+
+			const fileWithoutKey = {
+				content: '_mySong\n',
+				title: 'My Song',
+			};
+
+			await act(async () => {
+				result = render(
+					<PrintPreview {...props} selectedFile={fileWithoutKey} />
+				);
+			});
+
+			const { getAllByTestId } = result;
+
+			const allPages = getAllByTestId('printPreview-page');
+
+			expect(
+				allPages[0].querySelector('.printPreview-pageKey')
+			).toBeNull();
+		});
+	});
+
 	describe('Chord dictionary', () => {
 		test('Should render chord dictionary on first page only when showChordDiagrams is dictionary', async () => {
 			let result = {};

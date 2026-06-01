@@ -11,6 +11,9 @@ function Page(props) {
 		documentSize,
 		documentMargins,
 		fontSize,
+		title,
+		pageNumber,
+		pageCount,
 	} = props;
 
 	const allSectionsRendered = allColumnsLines.map((columnLines, index) => {
@@ -58,6 +61,18 @@ function Page(props) {
 					<div className={'printPreview-pageColumnWrapper'}>
 						{allSectionsRendered}
 					</div>
+					{pageCount > 0 ? (
+						<div className={'printPreview-pageFooter'}>
+							<span className={'printPreview-pageFooter-title'}>
+								{title}
+							</span>
+							<span
+								className={'printPreview-pageFooter-pageNumber'}
+							>
+								{'Page ' + pageNumber + ' of ' + pageCount}
+							</span>
+						</div>
+					) : null}
 				</div>
 			</div>
 		</div>
@@ -66,6 +81,9 @@ function Page(props) {
 Page.defaultProps = {
 	allColumnsLines: [],
 	dictionary: '',
+	title: '',
+	pageNumber: 0,
+	pageCount: 0,
 };
 Page.propTypes = {
 	pageHeader: PropTypes.element,
@@ -74,6 +92,9 @@ Page.propTypes = {
 	documentSize: PropTypes.string.isRequired,
 	documentMargins: PropTypes.number.isRequired,
 	fontSize: PropTypes.number.isRequired,
+	title: PropTypes.string,
+	pageNumber: PropTypes.number,
+	pageCount: PropTypes.number,
 };
 
 export default React.memo(Page);
