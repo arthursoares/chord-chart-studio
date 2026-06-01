@@ -39,9 +39,17 @@ export default async function getAllLinesHeight(
 		const pageColumnWrapper = container.querySelector(
 			'.printPreview-pageColumnWrapper'
 		);
+		const pageFooter = container.querySelector(
+			'.printPreview-pageFooter'
+		);
+		// The footer occupies space on every page, so the lines available on a
+		// normal page is the content height minus the footer. (On the first
+		// page the footer is already excluded — firstPageHeight measures the
+		// column wrapper, which sits above the footer.)
+		const footerHeight = pageFooter ? getClientHeight(pageFooter) : 0;
 		return {
 			firstPageHeight: getClientHeight(pageColumnWrapper),
-			normalPageHeight: getClientHeight(pageContent),
+			normalPageHeight: getClientHeight(pageContent) - footerHeight,
 		};
 	};
 
