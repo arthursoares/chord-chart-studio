@@ -40,7 +40,8 @@ function AllPages(props) {
 
 			const { normalPageHeight, firstPageHeight } = await getPagesHeight(
 				title,
-				pageOptions
+				pageOptions,
+				{ composer, dictionary }
 			);
 
 			const allLinesWithHeight = allLines.map((line, index) => ({
@@ -61,6 +62,8 @@ function AllPages(props) {
 	}, [
 		allLines,
 		title,
+		composer,
+		dictionary,
 		columnsCount,
 		columnBreakOnSection,
 		documentSize,
