@@ -46,4 +46,9 @@ export default connect((state) => ({
 	// layout mode
 	layoutMode: getOptionValue(state, 'songFormatting', 'layoutMode'),
 	barsPerLine: getOptionValue(state, 'songFormatting', 'barsPerLine'),
+	printChordsDuration: getOptionValue(
+		state,
+		'songFormatting',
+		'printChordsDuration'
+	),
 }))(SongRenderer);

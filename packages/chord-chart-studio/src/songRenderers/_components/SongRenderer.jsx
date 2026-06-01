@@ -30,6 +30,7 @@ function SongRenderer(props) {
 
 		'layoutMode',
 		'barsPerLine',
+		'printChordsDuration',
 	]);
 
 	const rendered = renderAsHtml(content, renderOptions, useChartFormat);

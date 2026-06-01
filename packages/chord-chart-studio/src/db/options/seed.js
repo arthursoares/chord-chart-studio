@@ -47,6 +47,8 @@ export default {
 
 			layoutMode: 'lyric',
 			barsPerLine: 4,
+
+			printChordsDuration: 'always',
 		},
 		defaults: {
 			chartType: 'all',
@@ -66,6 +68,8 @@ export default {
 
 			layoutMode: 'lyric',
 			barsPerLine: 4,
+
+			printChordsDuration: 'always',
 		},
 		//userDefaults: {},
 	},

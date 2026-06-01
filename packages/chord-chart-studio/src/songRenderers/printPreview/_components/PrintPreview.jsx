@@ -29,6 +29,7 @@ function PrintPreview(props) {
 
 		'layoutMode',
 		'barsPerLine',
+		'printChordsDuration',
 	]);
 
 	const rendered = renderAsHtml(selectedFile.content || '', {

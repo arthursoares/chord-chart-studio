@@ -18,6 +18,7 @@ const editorModeOptions = {
 
 		'layoutMode',
 		'barsPerLine',
+		'printChordsDuration',
 
 		'columnsCount',
 
@@ -39,6 +40,7 @@ const editorModeOptions = {
 
 		'layoutMode',
 		'barsPerLine',
+		'printChordsDuration',
 
 		'columnsCount',
 		'columnBreakOnSection',

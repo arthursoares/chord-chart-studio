@@ -365,6 +365,34 @@ export default {
 					},
 				},
 
+				printChordsDuration: {
+					label: 'Chord durations',
+					type: 'select',
+					typeOptions: {
+						allChoices: [
+							{
+								id: 'printChordsDurationAlways',
+								label: 'Always',
+								value: 'always',
+							},
+							{
+								id: 'printChordsDurationUneven',
+								label: 'When uneven',
+								value: 'uneven',
+							},
+							{
+								id: 'printChordsDurationNever',
+								label: 'Never',
+								value: 'never',
+							},
+						],
+					},
+					option: {
+						context: 'songFormatting',
+						key: 'printChordsDuration',
+					},
+				},
+
 				fontSize: {
 					label: 'Font size',
 					type: 'slider',
