@@ -1,15 +1,51 @@
-Welcome to Chord Chart Studio!
+Welcome to Chord Chart Studio — the official ChordMark editor!
+This sample shows most of the ChordMark syntax. Open it in Edit mode to read the source.
 
-Chord Chart Studio is the official editor of the ChordMark format. 
-You can use it to quickly write accurate transcription of songs made up of chords and lyrics. 
+composer The ChordMark Team
+key C
 
-A % D7.. E7..
-_Just write _some chords, some _lyrics
+#i
+NC C %
+_No chord ("NC"), then C, then "%" repeats the previous bar
+
+#v
+C.. G/B.. Am. [Am Am/G] F. G.
+_Dur-a-tions use _dots; square _brack-ets _group _sub-beats
+F G Am %
+_A "%" re-peats the _last _bar of the _line
+
+#v
+_The second verse re-uses verse one's chords auto-ma-ti-cal-ly —
+_so just add po-si-tion _markers; no chord line is _needed!
+
+#p
+key G
+D Em7
+_A "key" change _trans-poses the repeated chords
+
+#c
+G D/F# Em7 C
+_This is the _cho-rus of our _lit-tle _song
 %
-_And see how it _looks: _terrific!
+_A "%" alone on a line re-peats the whole chord line above
 
-Where to start? You can either:
-- check the sample song on the left
-- read the user guide, by clicking the big yellow button in the top right corner
+#c
 
-Have fun! 
+#b
+3/4
+Em.. B7. Am
+_The bridge drops to _three-four _time,
+4/4 G C %
+_then an in-line _change back to _four-four
+
+#s
+A7 %%
+_Solo: _A7 held for _three whole _bars
+
+#o x3
+C G
+_Out-ro, played three times
+
+chord Cadd9 x32030
+C[x32010] G[3,2,0,0,3,3] Cadd9
+:Compact and comma inline voicings, plus a custom "chord" diagram
