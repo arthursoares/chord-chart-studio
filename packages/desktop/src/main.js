@@ -22,6 +22,15 @@ const { pathToFileURL } = require('url');
 
 const isDev = process.env.NODE_ENV === 'development' || !app.isPackaged;
 
+// Optional dev aid: expose a CDP endpoint when CCS_REMOTE_DEBUG is set
+// (e.g. CCS_REMOTE_DEBUG=9222). Harmless when the variable is absent.
+if (process.env.CCS_REMOTE_DEBUG) {
+	app.commandLine.appendSwitch(
+		'remote-debugging-port',
+		process.env.CCS_REMOTE_DEBUG
+	);
+}
+
 // Custom protocol used to serve the built studio in production.
 // Registering a custom scheme lets window.location.pathname be a clean '/'
 // so the studio's History-based router resolves routes correctly.
@@ -220,6 +229,36 @@ ipcMain.handle('dialog:saveFile', async (_event, { content, defaultPath }) => {
 		dialog.showErrorBox(
 			'Save failed',
 			`Could not write file:\n${err.message}`
+		);
+		return null;
+	}
+});
+
+/**
+ * Open a .chordmark file from an explicit path, without a dialog.
+ * The renderer calls window.desktop.openPath(filePath); the content is
+ * delivered through the same 'file:opened' event as the File → Open… menu,
+ * so both entry points converge on one renderer code path. Also the hook
+ * for opening files passed on the command line / "Open With".
+ */
+const OPENABLE_EXTENSIONS = ['.chordmark', '.txt'];
+
+ipcMain.handle('file:openPath', async (_event, filePath) => {
+	if (typeof filePath !== 'string') {
+		return null;
+	}
+	if (!OPENABLE_EXTENSIONS.includes(path.extname(filePath).toLowerCase())) {
+		return null;
+	}
+
+	try {
+		const content = fs.readFileSync(filePath, 'utf-8');
+		mainWindow.webContents.send('file:opened', { filePath, content });
+		return { filePath };
+	} catch (err) {
+		dialog.showErrorBox(
+			'Open failed',
+			`Could not read file:\n${err.message}`
 		);
 		return null;
 	}

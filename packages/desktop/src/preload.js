@@ -17,6 +17,7 @@ const INVOKE_CHANNELS = [
 	'dialog:openFile',
 	'dialog:saveFile',
 	'dialog:exportPdf',
+	'file:openPath',
 ];
 const RECEIVE_CHANNELS = [
 	'menu:openFile',
@@ -66,6 +67,21 @@ contextBridge.exposeInMainWorld('desktop', {
 	 */
 	exportPdf() {
 		return ipcRenderer.invoke('dialog:exportPdf');
+	},
+
+	/**
+	 * Open a .chordmark file from an explicit path (no dialog). The content
+	 * arrives through the same onFileOpened event as the File → Open… menu.
+	 * @param {string} filePath
+	 * @returns {Promise<{filePath: string} | null>} null if unreadable/refused
+	 */
+	openPath(filePath) {
+		if (typeof filePath !== 'string') {
+			return Promise.reject(
+				new Error('openPath: filePath must be a string')
+			);
+		}
+		return ipcRenderer.invoke('file:openPath', filePath);
 	},
 
 	/**
