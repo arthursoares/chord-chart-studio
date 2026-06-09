@@ -37,8 +37,17 @@ function PrintPreview(props) {
 	});
 	const allLines = rendered.match(/(<p.*?>.*?<\/p>)/gm) || [];
 
+	// The renderer emits the chord dictionary around the song wrapper:
+	// before it for diagramPosition 'top', after it for 'bottom'.
+	const dictStart = rendered.indexOf('<div class="cmChordDictionary');
 	const songStart = rendered.indexOf('<div class="cmSong">');
-	const dictionary = songStart > 0 ? rendered.slice(0, songStart) : '';
+	let dictionary = '';
+	if (dictStart !== -1) {
+		dictionary =
+			dictStart < songStart
+				? rendered.slice(dictStart, songStart)
+				: rendered.slice(dictStart);
+	}
 
 	let composer = '';
 	let songKey = '';
@@ -66,6 +75,7 @@ function PrintPreview(props) {
 				composer={composer}
 				songKey={songKey}
 				dictionary={dictionary}
+				diagramPosition={props.diagramPosition}
 				allLines={allLines}
 				columnsCount={props.columnsCount}
 				columnBreakOnSection={props.columnBreakOnSection}

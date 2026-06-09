@@ -17,6 +17,7 @@ function AllPages(props) {
 		composer,
 		songKey,
 		dictionary,
+		diagramPosition,
 		allLines,
 		columnsCount,
 		columnBreakOnSection,
@@ -24,6 +25,13 @@ function AllPages(props) {
 		documentMargins,
 		fontSize,
 	} = props;
+
+	// With diagramPosition 'bottom' the dictionary gets its own trailing page
+	// instead of sharing page 1 with the song start, so the song pagination
+	// is not affected by the dictionary height.
+	const firstPageDictionary =
+		diagramPosition === 'bottom' ? '' : dictionary;
+	const trailingDictionary = diagramPosition === 'bottom' ? dictionary : '';
 
 	useLayoutEffect(() => {
 		const getDimensions = async () => {
@@ -42,7 +50,7 @@ function AllPages(props) {
 			const { normalPageHeight, firstPageHeight } = await getPagesHeight(
 				title,
 				pageOptions,
-				{ composer, songKey, dictionary }
+				{ composer, songKey, dictionary: firstPageDictionary }
 			);
 
 			const allLinesWithHeight = allLines.map((line, index) => ({
@@ -65,13 +73,15 @@ function AllPages(props) {
 		title,
 		composer,
 		songKey,
-		dictionary,
+		firstPageDictionary,
 		columnsCount,
 		columnBreakOnSection,
 		documentSize,
 		documentMargins,
 		fontSize,
 	]);
+
+	const pageCount = allPagesColumns.length + (trailingDictionary ? 1 : 0);
 
 	const allPagesRendered = allPagesColumns.map((pageColumns, index) => {
 		return (
@@ -86,17 +96,33 @@ function AllPages(props) {
 						/>
 					) : null
 				}
-				dictionary={index === 0 ? dictionary : ''}
+				dictionary={index === 0 ? firstPageDictionary : ''}
 				allColumnsLines={padColumns(columnsCount, pageColumns)}
 				documentSize={documentSize}
 				documentMargins={documentMargins}
 				fontSize={fontSize}
 				title={title}
 				pageNumber={index + 1}
-				pageCount={allPagesColumns.length}
+				pageCount={pageCount}
 			/>
 		);
 	});
+
+	if (trailingDictionary && allPagesColumns.length > 0) {
+		allPagesRendered.push(
+			<Page
+				key={'dictionary'}
+				dictionary={trailingDictionary}
+				allColumnsLines={padColumns(columnsCount)}
+				documentSize={documentSize}
+				documentMargins={documentMargins}
+				fontSize={fontSize}
+				title={title}
+				pageNumber={pageCount}
+				pageCount={pageCount}
+			/>
+		);
+	}
 
 	return <React.Fragment>{allPagesRendered}</React.Fragment>;
 }
@@ -105,12 +131,14 @@ AllPages.defaultProps = {
 	composer: '',
 	songKey: '',
 	dictionary: '',
+	diagramPosition: 'top',
 };
 AllPages.propTypes = {
 	title: PropTypes.string.isRequired,
 	composer: PropTypes.string,
 	songKey: PropTypes.string,
 	dictionary: PropTypes.string,
+	diagramPosition: PropTypes.string,
 	allLines: PropTypes.arrayOf(PropTypes.string).isRequired,
 	columnsCount: PropTypes.number.isRequired,
 	columnBreakOnSection: PropTypes.bool.isRequired,

@@ -80,9 +80,20 @@ function render(songTxt, renderOptions, useChartFormat, outputFormat) {
 
 	const chordMarkHtml = renderSong(songTxt, {
 		...resolveBarOptions(renderOptions),
-		wrapChordLyricLines: true,
+		wrapChordLyricLines: shouldWrapChordLyricLines(renderOptions),
 	});
 	return outputFormat === 'html' ? chordMarkHtml : toText(chordMarkHtml);
+}
+
+// Chord/lyric pairs only exist when chords are aligned with lyrics and both
+// line types render; wrapping does nothing for the other configurations —
+// and disabling it there lets inline chord diagrams render (chord-mark
+// suppresses them when wrapping, as the wrap renderer would corrupt them).
+function shouldWrapChordLyricLines(renderOptions) {
+	return (
+		renderOptions.alignChordsWithLyrics !== false &&
+		!['chords', 'lyrics'].includes(renderOptions.chartType)
+	);
 }
 
 function renderSong(songTxt, renderOptions) {
