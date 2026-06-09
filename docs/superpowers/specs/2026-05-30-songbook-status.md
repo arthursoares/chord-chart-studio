@@ -132,6 +132,19 @@ Done in songsheet-parser (committed on `main`):
   writes the selected file byte-identical to disk; openPath imports + dedups;
   the imported songbook renders in the print view.
 
+## Done — PDF export tweaks (2026-06-09, studio `01a576c`)
+
+- Export PDF captures the **print view** (bridge flips the mode and restores
+  it), defaults the file name to the song title, and passes
+  `preferCSSPageSize` against an `@page` rule injected by the preview, so the
+  exported pages are exactly the previewed pages.
+- New **Page size** print option: A4 / A4 landscape / Letter / Letter
+  landscape / Boox Max 2 Pro (documentSize was already plumbed through the
+  preview + measuring pipeline; surfaced it and added the missing CSS sizes).
+- Verified live: A4 export = 595×842pt, Letter-landscape = 792×612pt, both
+  matching the preview pagination. Next candidate: **Export Songbook** (batch
+  render the corpus via `file:openPath` into one bookmarked PDF with TOC).
+
 ## Remaining
 - **Corpus data cleanup**: ~45 chord lines in 25 generated files still fall
   back to lyric text because of OCR-junk chord names in the per-song JSON
