@@ -145,6 +145,22 @@ Done in songsheet-parser (committed on `main`):
   matching the preview pagination. Next candidate: **Export Songbook** (batch
   render the corpus via `file:openPath` into one bookmarked PDF with TOC).
 
+## Done — settings audit + fixes (2026-06-09)
+
+Audited all 20 print-mode options live (drove each through the Electron app
+and measured the DOM). 14 work; `autoRepeatChords`/`expandSectionCopy`/
+`columnBreakOnSection` are inert for this corpus because the vision parse
+emits no section labels (fix upstream by emitting `#labels`). Four bugs fixed:
+- **chord-mark `d5b3a8a`**: roman numerals now analyze against the
+  auto-detected key when no `key` is declared (every minor chord rendered as
+  "i" before — chega now shows iv⁷/i⁷); `chordsFirstLyricLine` keeps the
+  first lyric line of label-less songs (kept zero before). 1494 tests.
+- **studio `a283fbb`**: `diagramPosition: bottom` no longer loses the
+  dictionary — it renders on its own trailing page; inline chord diagrams
+  now render when no chord/lyric pairs wrap (wrapChordLyricLines is enabled
+  only when pairs can exist — chords-only and unaligned charts get inline
+  diagrams; aligned charts still suppress them, a wrap-renderer limitation).
+
 ## Remaining
 - **Corpus data cleanup**: ~45 chord lines in 25 generated files still fall
   back to lyric text because of OCR-junk chord names in the per-song JSON
