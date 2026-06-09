@@ -84,16 +84,66 @@ A full inline-voiced samba renders in the studio print view as: dictionary of
   Verified live: Roman/barre dictionary + key + footer + 2-page pagination all
   render together with nothing clipped.
 
+## Done — Bar mode + options (2026-06-0x)
+
+Supersedes the old "bars per line is not a render option" note — it now IS one:
+
+- **chord-mark** (`e0f9bae`, `a7bdf66`, `63e38f4`): `barsPerLine` renderer option
+  re-segments chord lines (Bar mode), including reflowing/merging chord lines to
+  fill the target width, plus a fix for a reflow chunk positioned without its
+  lyric line. 1492 tests / 100% coverage (verified green 2026-06-09).
+- **chord-chart-studio** (`7e8915a`, `aec1670`, `64ec62a`, `d21c748`, `65c6a62`):
+  Bar/Lyric layout-mode + bars-per-line controls; a "Chord durations" option
+  (always/uneven/never); first-page height fix so the dictionary no longer
+  overstuffs page 1; desktop Edit menu (clipboard shortcuts); the "Getting
+  started" sample is now a full ChordMark syntax showcase.
+
+## Done — Phase 3: `_`-anchored corpus (2026-06-09, songsheet-parser)
+
+The per-song corpus (`data/joao-gilberto/songs/<album>/<NN>-<song>.json`,
+chord-anchored model) already carried per-entry lyric fragments, and
+`chordmark_render.py` already emitted `_`-anchored lyric lines — the stale
+flat `chordmark/` files had simply been generated from the retired old JSON.
+Done in songsheet-parser (committed on `main`):
+- `json_to_chordmark.py` walks dirs recursively and mirrors the per-album
+  layout; single-song docs are named after the file stem (`NN-` prefix), so
+  repeated titles across albums don't collide.
+- `render_song` emits `composer`/`key` declarations (key gated to real key
+  names) and drops fully empty bars (vision-parse noise).
+- `normalize_chord_name` extended: comma/dot tension stacks (`E13,9`→`E13`),
+  slash-4 sus (`C#4/9`→`C#9sus4`, `G7/4`→`G7sus4`), `m7-9`→`m7b9`.
+- Corpus regenerated: 185 songs under `chordmark/<album>/`, all parse in the
+  fork, 4986 lyric lines carry chord anchors. Verified visually in the studio
+  print view (chords sit over their syllables). Remaining 45 fallen-back
+  chord lines in 25 files are OCR junk in the corpus JSON (`Bm7/Fa`,
+  rootless `dim`, `B79/Dº`…) — fix in the JSON, not the emitter.
+
+## Done — Desktop Open/Save wired to Redux (2026-06-09)
+
+- `src/desktop/registerDesktopHandlers.js` (studio) bridges `window.desktop`:
+  `file:opened` → `importFile` titled after the file name (re-opening the
+  same path reloads the same file); menu Save/Save As pull the selected file
+  from the store and remember the dialog-picked path as the next defaultPath.
+  Registered from `app.js`; no-op in the web build. Unit-tested.
+- `file:openPath` IPC (main+preload): open an explicit path with no dialog,
+  converging on the same `file:opened` event — hook for CLI/"Open With" and
+  for driving the app in tests. `CCS_REMOTE_DEBUG=<port>` exposes CDP in dev.
+- Verified live in Electron: menu Open imports into the store; menu Save
+  writes the selected file byte-identical to disk; openPath imports + dedups;
+  the imported songbook renders in the print view.
+
 ## Remaining
-- **Phase 3 — alignment for unmarked sources**: the `joao-gilberto` `.chordmark`
-  files have no `_` markers, so chords don't sit over the right syllables in the
-  studio. Fix upstream in songsheet-parser (emit `_`).
-- **Bars per line**: not a render option — it follows the source (one chord line =
-  one output line, with however many bars). Control it in songsheet-parser output
-  (group N bars per chord line). A renderer reflow option is feasible only for
-  chord-only charts (lyrics bind to chord lines).
-- **Commit hygiene**: studio `editorModeOptions` change to commit; nothing pushed
-  in any repo (per the user's workflow — they decide pushing).
+- **Corpus data cleanup**: ~45 chord lines in 25 generated files still fall
+  back to lyric text because of OCR-junk chord names in the per-song JSON
+  (`Bm7/Fa`, `dim`/`dim+5` without root, `B79/Dº`, `A*maj9`…). Fix the JSON.
+- **Desktop follow-ups**: code signing / notarization; auto-update; optionally
+  open files passed on the command line via the new `file:openPath` path.
+- **Commit hygiene**: nothing pushed in any repo (chord-mark master ahead 44,
+  studio master ahead 21, songsheet-parser main ahead 5 — per the user's
+  workflow, they decide pushing). Untracked throwaways in chord-mark root:
+  demo/validation HTML+PNG and `tests/_renderTarget.spec.js` (writes the
+  chega target render into songsheet-parser; exclude via jest
+  `--testPathIgnorePatterns _renderTarget`).
 
 ## Desktop app (Electron)
 
