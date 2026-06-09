@@ -167,9 +167,10 @@ emits no section labels (fix upstream by emitting `#labels`). Four bugs fixed:
   (`Bm7/Fa`, `dim`/`dim+5` without root, `B79/Dº`, `A*maj9`…). Fix the JSON.
 - **Desktop follow-ups**: code signing / notarization; auto-update; optionally
   open files passed on the command line via the new `file:openPath` path.
-- **Commit hygiene**: nothing pushed in any repo (chord-mark master ahead 44,
-  studio master ahead 21, songsheet-parser main ahead 5 — per the user's
-  workflow, they decide pushing). Untracked throwaways in chord-mark root:
+- **Commit hygiene**: chord-mark and chord-chart-studio master are pushed to
+  the user's GitHub forks (`arthursoares/<repo>`, remote name `fork`; `origin`
+  is the no-chris upstream — do NOT push there). songsheet-parser pushes to
+  its own origin. Untracked throwaways in chord-mark root:
   demo/validation HTML+PNG and `tests/_renderTarget.spec.js` (writes the
   chega target render into songsheet-parser; exclude via jest
   `--testPathIgnorePatterns _renderTarget`).
