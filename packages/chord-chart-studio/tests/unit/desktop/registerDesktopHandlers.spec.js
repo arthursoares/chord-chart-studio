@@ -6,9 +6,12 @@ import { createStore, getStore } from '../../../src/state/store';
 import registerDesktopHandlers, {
 	_handleFileOpened,
 	_handleSaveFile,
+	_handleExportPdf,
 } from '../../../src/desktop/registerDesktopHandlers';
 import { getSelectedId } from '../../../src/fileManager/_state/selectors';
 import { getOne } from '../../../src/db/files/selectors';
+import { setEditorMode } from '../../../src/ui/layout/app/_state/actions';
+import { getEditorMode } from '../../../src/ui/layout/app/_state/selectors';
 
 let nextUuid = 0;
 uuidv4.mockImplementation(() => 'uuid-' + nextUuid++);
@@ -17,11 +20,12 @@ const buildDesktopMock = () => ({
 	isDesktop: true,
 	openFile: jest.fn(),
 	saveFile: jest.fn().mockResolvedValue(null),
-	exportPdf: jest.fn(),
+	exportPdf: jest.fn().mockResolvedValue(null),
 	onOpenFile: jest.fn(),
 	onSaveFile: jest.fn(),
 	onSaveFileAs: jest.fn(),
 	onFileOpened: jest.fn(),
+	onExportPdf: jest.fn(),
 });
 
 beforeEach(() => {
@@ -44,6 +48,58 @@ describe('registerDesktopHandlers', () => {
 		expect(desktop.onFileOpened).toHaveBeenCalledWith(_handleFileOpened);
 		expect(desktop.onSaveFile).toHaveBeenCalledWith(_handleSaveFile);
 		expect(desktop.onSaveFileAs).toHaveBeenCalledWith(_handleSaveFile);
+		expect(desktop.onExportPdf).toHaveBeenCalledWith(_handleExportPdf);
+	});
+});
+
+describe('_handleExportPdf', () => {
+	test('switches to the print view for the capture, then restores the mode', async () => {
+		const desktop = buildDesktopMock();
+		window.desktop = desktop;
+
+		getStore().dispatch(setEditorMode('edit'));
+
+		let modeDuringExport;
+		desktop.exportPdf.mockImplementation(() => {
+			modeDuringExport = getEditorMode(getStore().getState());
+			return Promise.resolve(null);
+		});
+
+		_handleFileOpened({
+			filePath: '/tmp/songs/Chega de Saudade.chordmark',
+			content: 'A7.. B7..',
+		});
+		await _handleExportPdf();
+
+		expect(modeDuringExport).toBe('print');
+		expect(getEditorMode(getStore().getState())).toBe('edit');
+		expect(desktop.exportPdf).toHaveBeenCalledWith({
+			defaultPath: 'Chega de Saudade.pdf',
+			pageSize: 'A4',
+			landscape: false,
+		});
+	});
+
+	test('stays in print mode when already there and maps the page-size option', async () => {
+		const desktop = buildDesktopMock();
+		window.desktop = desktop;
+
+		_handleFileOpened({
+			filePath: '/tmp/songs/Outra/Coisa.chordmark',
+			content: 'Dm7',
+		});
+		// importing a file resets the mode to 'edit', so switch after opening
+		getStore().dispatch(setEditorMode('print'));
+
+		await _handleExportPdf();
+
+		expect(getEditorMode(getStore().getState())).toBe('print');
+		// title comes from the file name; '/' would break the save dialog path
+		expect(desktop.exportPdf).toHaveBeenCalledWith({
+			defaultPath: 'Coisa.pdf',
+			pageSize: 'A4',
+			landscape: false,
+		});
 	});
 });
 

@@ -325,6 +325,7 @@ export default {
 				'fontSize',
 				'columnsCount',
 				'columnBreakOnSection',
+				'documentSize',
 				'documentMargins',
 			],
 
@@ -426,6 +427,44 @@ export default {
 					option: {
 						context: 'songFormatting',
 						key: 'columnBreakOnSection',
+					},
+				},
+
+				documentSize: {
+					label: 'Page size',
+					type: 'select',
+					typeOptions: {
+						allChoices: [
+							{
+								id: 'documentSizeA4',
+								label: 'A4',
+								value: 'a4',
+							},
+							{
+								id: 'documentSizeA4Landscape',
+								label: 'A4 landscape',
+								value: 'a4-landscape',
+							},
+							{
+								id: 'documentSizeLetter',
+								label: 'Letter',
+								value: 'letter',
+							},
+							{
+								id: 'documentSizeLetterLandscape',
+								label: 'Letter landscape',
+								value: 'letter-landscape',
+							},
+							{
+								id: 'documentSizeBooxMax2Pro',
+								label: 'Boox Max 2 Pro',
+								value: 'booxmax2pro',
+							},
+						],
+					},
+					option: {
+						context: 'songFormatting',
+						key: 'documentSize',
 					},
 				},
 

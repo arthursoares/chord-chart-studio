@@ -266,12 +266,26 @@ ipcMain.handle('file:openPath', async (_event, filePath) => {
 
 /**
  * Export the current view as a PDF via webContents.printToPDF().
- * Also triggered from File → Export PDF in the app menu.
+ * The renderer drives this (after switching itself to the print view) with
+ * the song title as suggested file name and the page setup matching the
+ * preview. preferCSSPageSize hands pagination to the preview's @page rule,
+ * so the exported pages are exactly the previewed pages.
  */
-ipcMain.handle('dialog:exportPdf', async () => {
+const PDF_PAGE_SIZES = ['A4', 'Letter'];
+
+ipcMain.handle('dialog:exportPdf', async (_event, opts = {}) => {
+	const defaultPath =
+		typeof opts.defaultPath === 'string' && opts.defaultPath
+			? opts.defaultPath
+			: 'chord-chart.pdf';
+	const pageSize = PDF_PAGE_SIZES.includes(opts.pageSize)
+		? opts.pageSize
+		: 'A4';
+	const landscape = opts.landscape === true;
+
 	const { canceled, filePath } = await dialog.showSaveDialog(mainWindow, {
 		title: 'Export as PDF',
-		defaultPath: 'chord-chart.pdf',
+		defaultPath,
 		filters: [{ name: 'PDF Files', extensions: ['pdf'] }],
 	});
 
@@ -282,8 +296,9 @@ ipcMain.handle('dialog:exportPdf', async () => {
 	try {
 		const pdfData = await mainWindow.webContents.printToPDF({
 			printBackground: true,
-			pageSize: 'A4',
-			landscape: false,
+			pageSize,
+			landscape,
+			preferCSSPageSize: true,
 		});
 		fs.writeFileSync(filePath, pdfData);
 		shell.openPath(filePath);
@@ -362,36 +377,12 @@ function buildMenu() {
 			{
 				label: 'Export PDF',
 				accelerator: 'CmdOrCtrl+Shift+E',
-				async click() {
+				click() {
 					if (!mainWindow) return;
-					const { canceled, filePath } = await dialog.showSaveDialog(
-						mainWindow,
-						{
-							title: 'Export as PDF',
-							defaultPath: 'chord-chart.pdf',
-							filters: [
-								{ name: 'PDF Files', extensions: ['pdf'] },
-							],
-						}
-					);
-					if (canceled || !filePath) return;
-
-					try {
-						const pdfData = await mainWindow.webContents.printToPDF(
-							{
-								printBackground: true,
-								pageSize: 'A4',
-								landscape: false,
-							}
-						);
-						fs.writeFileSync(filePath, pdfData);
-						shell.openPath(filePath);
-					} catch (err) {
-						dialog.showErrorBox(
-							'Export failed',
-							`Could not export PDF:\n${err.message}`
-						);
-					}
+					// The renderer switches itself to the print view and
+					// calls back into dialog:exportPdf with the song title
+					// and the page setup matching the preview.
+					mainWindow.webContents.send('menu:exportPdf');
 				},
 			},
 			{ type: 'separator' },

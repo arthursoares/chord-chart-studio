@@ -44,6 +44,7 @@ const editorModeOptions = {
 
 		'columnsCount',
 		'columnBreakOnSection',
+		'documentSize',
 		'documentMargins',
 
 		'fontSize',

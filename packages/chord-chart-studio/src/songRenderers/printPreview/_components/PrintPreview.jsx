@@ -56,8 +56,11 @@ function PrintPreview(props) {
 
 	const classNames = ['printPreview', 'cmTheme-print'];
 
+	const documentSize = props.documentSize || 'a4';
+
 	return (
 		<div className={classNames.join(' ')} data-testid={'printPreview'}>
+			<style>{`@page { size: ${cssPageSize[documentSize] || 'A4'}; margin: 0; }`}</style>
 			<AllPages
 				title={selectedFile.title || ''}
 				composer={composer}
@@ -66,13 +69,24 @@ function PrintPreview(props) {
 				allLines={allLines}
 				columnsCount={props.columnsCount}
 				columnBreakOnSection={props.columnBreakOnSection}
-				documentSize={props.documentSize || 'a4'}
+				documentSize={documentSize}
 				documentMargins={props.documentMargins}
 				fontSize={props.fontSize}
 			/>
 		</div>
 	);
 }
+
+// Pin the printed page size to the previewed page size (with
+// preferCSSPageSize, the PDF export then paginates exactly like the preview
+// instead of letting the print engine re-flow the pages).
+const cssPageSize = {
+	a4: 'A4',
+	'a4-landscape': 'A4 landscape',
+	letter: 'letter',
+	'letter-landscape': 'letter landscape',
+	booxmax2pro: '698px 930px',
+};
 PrintPreview.propTypes = {
 	chartType: PropTypes.string.isRequired,
 	selectedFile: PropTypes.object.isRequired,

@@ -1,8 +1,11 @@
 import { getStore } from '../state/store';
 import { importFile, updateFile } from '../db/files/actions';
 import { getOne } from '../db/files/selectors';
+import { getOptionValue } from '../db/options/selectors';
 import { selectFile } from '../fileManager/_state/actions';
 import { getSelectedId } from '../fileManager/_state/selectors';
+import { setEditorMode } from '../ui/layout/app/_state/actions';
+import { getEditorMode } from '../ui/layout/app/_state/selectors';
 
 /**
  * Bridge between the Electron shell (window.desktop, see packages/desktop)
@@ -63,6 +66,57 @@ export async function _handleSaveFile() {
 	}
 }
 
+// printToPDF page setups matching the preview's documentSize values.
+// booxmax2pro has no printToPDF equivalent: the @page rule injected by the
+// print preview takes over via preferCSSPageSize.
+const pdfPageSetup = {
+	a4: { pageSize: 'A4', landscape: false },
+	'a4-landscape': { pageSize: 'A4', landscape: true },
+	letter: { pageSize: 'Letter', landscape: false },
+	'letter-landscape': { pageSize: 'Letter', landscape: true },
+};
+
+// Give React (and the preview's async page-measuring pass) time to paint the
+// print view before the PDF is captured. The capture itself only happens
+// after the user confirms the save dialog, so this only needs to cover the
+// initial mount, not the full pagination.
+const waitForRender = () =>
+	new Promise((resolve) => setTimeout(resolve, 500));
+
+export async function _handleExportPdf() {
+	const store = getStore();
+	const state = store.getState();
+
+	const id = getSelectedId(state);
+	const file = id ? getOne(state, id) : undefined;
+
+	// Export captures the live page: make sure that is the print view, and
+	// restore whatever mode the user was in once the export is done.
+	const previousMode = getEditorMode(state);
+	if (previousMode !== 'print') {
+		store.dispatch(setEditorMode('print'));
+		await waitForRender();
+	}
+
+	try {
+		const documentSize = getOptionValue(
+			store.getState(),
+			'songFormatting',
+			'documentSize'
+		);
+		await window.desktop.exportPdf({
+			defaultPath: file
+				? `${file.title.replace(/[/:]/g, '-')}.pdf`
+				: undefined,
+			...(pdfPageSetup[documentSize] || pdfPageSetup.a4),
+		});
+	} finally {
+		if (previousMode !== 'print') {
+			store.dispatch(setEditorMode(previousMode));
+		}
+	}
+}
+
 export default function registerDesktopHandlers() {
 	const desktop = window.desktop;
 	if (!desktop || !desktop.isDesktop) return;
@@ -71,4 +125,5 @@ export default function registerDesktopHandlers() {
 	desktop.onSaveFile(_handleSaveFile);
 	// dialog:saveFile always prompts, so Save As is the same flow as Save
 	desktop.onSaveFileAs(_handleSaveFile);
+	desktop.onExportPdf(_handleExportPdf);
 }

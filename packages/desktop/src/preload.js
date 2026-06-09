@@ -23,6 +23,7 @@ const RECEIVE_CHANNELS = [
 	'menu:openFile',
 	'menu:saveFile',
 	'menu:saveFileAs',
+	'menu:exportPdf',
 	'file:opened',
 ];
 
@@ -63,10 +64,26 @@ contextBridge.exposeInMainWorld('desktop', {
 
 	/**
 	 * Export the current page as a PDF using webContents.printToPDF().
+	 * @param {object} [opts]
+	 * @param {string} [opts.defaultPath]  - suggested file name
+	 * @param {string} [opts.pageSize]     - 'A4' | 'Letter'
+	 * @param {boolean} [opts.landscape]
 	 * @returns {Promise<{filePath: string} | null>}
 	 */
-	exportPdf() {
-		return ipcRenderer.invoke('dialog:exportPdf');
+	exportPdf(opts) {
+		const safe = {};
+		if (opts && typeof opts === 'object') {
+			if (typeof opts.defaultPath === 'string') {
+				safe.defaultPath = opts.defaultPath;
+			}
+			if (typeof opts.pageSize === 'string') {
+				safe.pageSize = opts.pageSize;
+			}
+			if (typeof opts.landscape === 'boolean') {
+				safe.landscape = opts.landscape;
+			}
+		}
+		return ipcRenderer.invoke('dialog:exportPdf', safe);
 	},
 
 	/**
@@ -116,6 +133,17 @@ contextBridge.exposeInMainWorld('desktop', {
 		const handler = (_event, data) => callback(data);
 		ipcRenderer.on('menu:saveFileAs', handler);
 		return () => ipcRenderer.removeListener('menu:saveFileAs', handler);
+	},
+
+	/**
+	 * Register a callback for menu Export PDF.
+	 * @param {function} callback
+	 * @returns {function} unsubscribe
+	 */
+	onExportPdf(callback) {
+		const handler = (_event, data) => callback(data);
+		ipcRenderer.on('menu:exportPdf', handler);
+		return () => ipcRenderer.removeListener('menu:exportPdf', handler);
 	},
 
 	/**

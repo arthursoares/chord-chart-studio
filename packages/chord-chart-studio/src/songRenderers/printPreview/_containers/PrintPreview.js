@@ -57,6 +57,7 @@ export default connect((state) => ({
 		'songFormatting',
 		'columnBreakOnSection'
 	),
+	documentSize: getOptionValue(state, 'songFormatting', 'documentSize'),
 	documentMargins: getOptionValue(state, 'songFormatting', 'documentMargins'),
 
 	fontSize: getOptionValue(state, 'songFormatting', 'fontSize'),

@@ -39,6 +39,7 @@ export default {
 			fontSize: 0,
 			columnsCount: 1,
 			columnBreakOnSection: true,
+			documentSize: 'a4',
 			documentMargins: 3,
 
 			showChordDiagrams: 'none',
@@ -60,6 +61,7 @@ export default {
 			fontSize: 0,
 			columnsCount: 1,
 			columnBreakOnSection: true,
+			documentSize: 'a4',
 			documentMargins: 3,
 
 			showChordDiagrams: 'none',

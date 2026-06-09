@@ -137,6 +137,21 @@ $themes: (
 	height: 297mm;
 }
 
+.printPreview-page--a4-landscape {
+	width: 297mm;
+	height: 210mm;
+}
+
+.printPreview-page--letter {
+	width: 215.9mm;
+	height: 279.4mm;
+}
+
+.printPreview-page--letter-landscape {
+	width: 279.4mm;
+	height: 215.9mm;
+}
+
 .printPreview-page--booxmax2pro {
 	width: 698px;
 	height: 930px;
